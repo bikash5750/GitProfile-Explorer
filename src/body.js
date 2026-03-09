@@ -3,9 +3,9 @@ import { useEffect, useState } from "react"
 function Body(){
 
     const [profile , setprofile] = useState([])
-
+    
     async function generateprofile(){
-        const response = await fetch("https://api.github.com/users?per_page=10")
+        const response = await fetch("https://api.github.com/users?per_page={searchvalue}")
         const data = await response.json()
 
         setprofile(data)
@@ -17,9 +17,13 @@ function Body(){
     },[])
 
     return(
-        <div className="profiles">
-            {
-                profile.map((value)=>(
+        <>
+         <div className="butt">
+            <input type="number" className="inputtype" placeholder="Search here"></input>
+            <button>Search Profile</button>
+         </div>
+         <div className="profiles">
+                {profile.map((value) => (
                     <div key={value.id} className="cards">
                         <img src={value.avatar_url} />
                         <h2>{value.login}</h2>
@@ -28,9 +32,9 @@ function Body(){
                         </a>
 
                     </div>
-                ))
-            }
-        </div>
+                ))}
+            </div>
+        </>
     )
 }
 
