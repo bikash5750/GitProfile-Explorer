@@ -3,24 +3,42 @@ import { useEffect, useState } from "react"
 function Body(){
 
     const [profile , setprofile] = useState([])
-    
-    async function generateprofile(){
-        const response = await fetch("https://api.github.com/users?per_page={searchvalue}")
-        const data = await response.json()
+    const [numberofprofile , setnumberofprofile] = useState("") 
+    async function generateprofile(count){
+
+        if(!isNaN(count) && count !== ""){
+             const ran = Math.floor(1+Math.random()*10000)
+             const response = await fetch(`https://api.github.com/users?since=${ran}&per_page=${count}`)
+             const data = await response.json()
 
         setprofile(data)
+        }
+        else{
+           const response = await fetch(
+            `https://api.github.com/users/${count}`
+             )
+             const data = await response.json()
+             if(data.message === "Not Found"){
+                 setprofile([])
+                 alert("User not found")
+                }
+                else{
+                setprofile([data])
+                }
+        }
+        
     }
 
      
     useEffect(()=>{
-        generateprofile()
+        generateprofile(10)
     },[])
 
     return(
         <>
          <div className="butt">
-            <input type="number" className="inputtype" placeholder="Search here"></input>
-            <button>Search Profile</button>
+            <input type="text" className="inputtype" placeholder="Search here" value={numberofprofile} onChange={(e)=>setnumberofprofile(e.target.value)}/>
+            <button onClick={()=>generateprofile(numberofprofile)}>Search Profile</button>
          </div>
          <div className="profiles">
                 {profile.map((value) => (
